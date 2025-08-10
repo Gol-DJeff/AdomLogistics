@@ -23,6 +23,7 @@ public class AdomBanner {
         bElements.addToMenu("Search & Sort Features");
         bElements.addToMenu("Exit");
         bElements.printMenu();
+
     }
 
     public void selectMenuItem() {
