@@ -1,9 +1,15 @@
 import AdomLogisticsConsoleApp.AdomBanner;
 
 public class App {
-    static AdomBanner adomBanner = new AdomBanner(50);
-    public static void main(String[] args) throws Exception {
-        // System.out.println("Hello, World!");
-        adomBanner.selectMenuItem();
+    private static final int BANNER_WIDTH = 50;
+    private static final AdomBanner adomBanner = new AdomBanner(BANNER_WIDTH);
+
+    public static void main(String[] args) {
+        try {
+            adomBanner.selectMenuItem();
+        } catch (Exception e) {
+            System.err.println("An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 }

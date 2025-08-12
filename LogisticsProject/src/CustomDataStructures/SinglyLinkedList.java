@@ -1,98 +1,105 @@
 package CustomDataStructures;
 
 public class SinglyLinkedList<E> {
-    public NodeElements<E> head;
-    public NodeElements<E> tail;
-    public int size; // To keep track of the size of the list
+    protected NodeElements<E> head;
+    protected NodeElements<E> tail;
+    protected int size;
 
-    // constructor to initialize the head and tail and get the size
+    // Constructor initializes head, tail, and size
     public SinglyLinkedList() {
         head = null;
         tail = null;
-        size(); // size getter
+        size = 0;
     }
 
     // Insert at front of the list
     public void insertFront(E element) {
-        NodeElements<E> newNode = new NodeElements<>(); // Create a new node for the element
-        newNode.SinglyNodeElements(element); // Initialize the node with the provided data
-        newNode.next = head; // Set the new node's next to the current head
-        head = newNode; // Update the head to point to the new node
-        if (tail == null) {
-            tail = newNode; // If the list was empty, set tail to the new node
+        if (element == null) {
+            throw new IllegalArgumentException("Element cannot be null.");
         }
-        size = size + 1; // Increment the size of the list
+        NodeElements<E> newNode = new NodeElements<>();
+        newNode.SinglyNodeElements(element);
+        newNode.next = head;
+        head = newNode;
+        if (tail == null) {
+            tail = newNode;
+        }
+        size++;
     }
 
-    // Return and remove from front of the list
+    // Remove from front of the list
     public void removeFront() {
-        // check if head is empty before removing
-        if (head != null) {
-            head = head.next;
-            if (head == null) {
-                tail = null;
-            }
-            size = size - 1;
+        if (head == null) {
+            throw new IllegalStateException("Cannot remove from front: List is empty.");
         }
+        head = head.next;
+        if (head == null) {
+            tail = null;
+        }
+        size--;
     }
 
     // Insert at back of the list
     public void insertBack(E element) {
-        NodeElements<E> newNode = new NodeElements<>();// Create a new node for the element
-        newNode.SinglyNodeElements(element); // Initialize the node with the provided data
+        if (element == null) {
+            throw new IllegalArgumentException("Element cannot be null.");
+        }
+        NodeElements<E> newNode = new NodeElements<>();
+        newNode.SinglyNodeElements(element);
         if (tail == null) {
             head = tail = newNode;
         } else {
             tail.next = newNode;
             tail = newNode;
         }
-        size = size + 1;
+        size++;
     }
 
-    // Return and remove from back of the list
+    // Remove from back of the list
     public void removeBack() {
         if (head == null) {
-            return; // If the list is empty, do nothing
+            throw new IllegalStateException("Cannot remove from back: List is empty.");
         }
         if (head == tail) {
             head = tail = null;
-            return;
+        } else {
+            NodeElements<E> current = head;
+            while (current.next != tail) {
+                current = current.next;
+            }
+            current.next = null;
+            tail = current;
         }
-        NodeElements<E> current = head;
-        while (current.next != tail) {
-            current = current.next;
-        }
-        current.next = null;
-        tail = current;
+        size--;
     }
 
     public void displayList() {
         NodeElements<E> current = head;
-        if (current != null) {
-            System.out.println("<-- Start");
-            while (current != null) {
-                System.out.println(current.data);
-                current = current.next;
-            }
-            System.out.println("End -->");
-        } else {
+        if (current == null) {
             System.out.println("Empty list");
+            return;
         }
+        System.out.println("<-- Start");
+        while (current != null) {
+            System.out.println(current.data);
+            current = current.next;
+        }
+        System.out.println("End -->");
     }
 
     public void clear() {
-        while (head != null || tail != null) {
-            removeFront();
-        }
+        head = null;
+        tail = null;
+        size = 0;
     }
 
     public int size() {
-        return size; // Return the size of the stack
+        return size;
     }
 
     public NodeElements<E> getNodeAt(int i) {
         if (i < 0 || i >= size) {
-            return null;
+            throw new IndexOutOfBoundsException("Index out of bounds: " + i);
         }
         NodeElements<E> current = head;
         int index = 0;
@@ -102,7 +109,8 @@ public class SinglyLinkedList<E> {
         }
         return current;
     }
-    public void displayNodeAt(int i){
+
+    public void displayNodeAt(int i) {
         if (i < 0 || i >= size) {
             System.out.println("Index out of bounds");
             return;

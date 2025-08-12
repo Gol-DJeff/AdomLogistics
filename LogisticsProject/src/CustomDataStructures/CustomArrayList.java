@@ -1,71 +1,79 @@
 package CustomDataStructures;
 
 public class CustomArrayList<T> {
-    private T[] ArrayInput; // Array to hold the elements
+    private T[] arrayInput; // Array to hold the elements
     private int size; // Current size of the array
 
     @SuppressWarnings("unchecked")
     public CustomArrayList() {
-        ArrayInput = (T[]) new Object[1]; // Initialize with a default size of 1
-        size = 0; // Start with size 0
+        arrayInput = (T[]) new Object[2]; // Start with a slightly larger default size for efficiency
+        size = 0;
     }
 
-    public int size(){
-        return size; // Return the current size of the array
+    public int size() {
+        return size;
     }
 
     // Method to add an element to the array
     public void addElement(T value) {
-        if (size == ArrayInput.length) {
-            resizeArray(ArrayInput.length + 1); // Resize the array if it's full. add 1 to the length
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot add null element.");
         }
-        ArrayInput[size++] = value; // add the new value to the new slot created
+        if (size == arrayInput.length) {
+            resizeArray(arrayInput.length * 2); // Double the array size for better performance
+        }
+        arrayInput[size++] = value;
     }
 
     // Method to get an element at a specific index
     public T getElement(int index) {
-        checkIndex(index); // Check if the index is valid
-        return ArrayInput[index]; // Return the element at the specified index
+        checkIndex(index);
+        return arrayInput[index];
     }
 
     // Method to set an element at a specific index
     public void setElement(int index, T value) {
-        checkIndex(index); // Check if the index is valid
-        ArrayInput[index] = value; // Set the value at the specified index
+        checkIndex(index);
+        if (value == null) {
+            throw new IllegalArgumentException("Cannot set null element.");
+        }
+        arrayInput[index] = value;
     }
 
     // Method to remove an element at a specific index
     public T removeElement(int index) {
-        checkIndex(index); // Check if the index is valid
-        T removedElement = ArrayInput[index]; // Store the element to be removed
+        checkIndex(index);
+        T removedElement = arrayInput[index];
         for (int i = index; i < size - 1; i++) {
-            ArrayInput[i] = ArrayInput[i + 1]; // Shift elements to the left
+            arrayInput[i] = arrayInput[i + 1];
         }
-        ArrayInput[size - 1] = null; // Clear the last element
+        arrayInput[size - 1] = null;
         size--;
-        resizeArray(size); // Resize the array to the new size
-        return removedElement; // Return the removed element
+        if (size > 0 && size == arrayInput.length / 4) {
+            resizeArray(arrayInput.length / 2); // Shrink the array if it's too empty
+        }
+        return removedElement;
     }
 
     // Method to check validity of the index
     private void checkIndex(int index) {
-        // Check if the index is within the bounds of the array
         if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Invalid index: " + index); // Throw an exception if the index is invalid
+            throw new IndexOutOfBoundsException("Invalid index: " + index);
         }
     }
 
     // Method to resize the array
     @SuppressWarnings("unchecked")
-    private void resizeArray(int i) {
-        T[] newDataSpace = (T[]) new Object[i]; // Create a new array with the new size
-        System.arraycopy(ArrayInput, 0, newDataSpace, 0, size); // Copy the old elements to the new array
-        ArrayInput = newDataSpace; // Update the reference to the new array
+    private void resizeArray(int newCapacity) {
+        if (newCapacity < 2) newCapacity = 2;
+        T[] newDataSpace = (T[]) new Object[newCapacity];
+        System.arraycopy(arrayInput, 0, newDataSpace, 0, size);
+        arrayInput = newDataSpace;
     }
 
     @SuppressWarnings("unchecked")
     public void clear() {
-        ArrayInput = (T[]) new Object[1]; // Reset the array to a new array of size 1
-        size = 0; // Reset the size to 0
+        arrayInput = (T[]) new Object[2];
+        size = 0;
     }
 }

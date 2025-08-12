@@ -5,7 +5,7 @@ public class DoublyLinkedList<E> extends SinglyLinkedList<E> {
     @Override
     public void insertFront(E element) {
         NodeElements<E> newNode = new NodeElements<>();
-        newNode.DoublyNodeElements(element); // includes prev and next
+        newNode.DoublyNodeElements(element);
         newNode.next = head;
         if (head != null) {
             head.previous = newNode;
@@ -13,20 +13,21 @@ public class DoublyLinkedList<E> extends SinglyLinkedList<E> {
             tail = newNode;
         }
         head = newNode;
-        size = size + 1;
+        size++;
     }
 
     @Override
     public void removeFront() {
-        if (head != null) {
-            head = head.next;
-            if (head != null) {
-                head.previous = null; // reset backward link
-            } else {
-                tail = null; // list became empty
-            }
-            size--;
+        if (head == null) {
+            throw new IllegalStateException("Cannot remove from front: List is empty.");
         }
+        head = head.next;
+        if (head != null) {
+            head.previous = null;
+        } else {
+            tail = null;
+        }
+        size--;
     }
 
     @Override
@@ -34,109 +35,106 @@ public class DoublyLinkedList<E> extends SinglyLinkedList<E> {
         NodeElements<E> newNode = new NodeElements<>();
         newNode.DoublyNodeElements(element);
         newNode.previous = tail;
-        newNode.next = null; // new node will be the last node
+        newNode.next = null;
         if (tail != null) {
             tail.next = newNode;
         } else {
             head = newNode;
         }
         tail = newNode;
-        size = size + 1;
+        size++;
     }
 
     @Override
     public void removeBack() {
-        if (tail != null) {
-            tail = tail.previous;
-            if (tail != null) {
-                tail.next = null;
-            } else {
-                head = null; // list became empty
-            }
-            size = size - 1;
+        if (tail == null) {
+            throw new IllegalStateException("Cannot remove from back: List is empty.");
         }
+        tail = tail.previous;
+        if (tail != null) {
+            tail.next = null;
+        } else {
+            head = null;
+        }
+        size--;
     }
 
     public void addAt(int index, E element) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
         if (index == 0) {
             insertFront(element);
-            return;
+        } else if (index == size) {
+            insertBack(element);
         } else {
             NodeElements<E> previousNode = getNodeAt(index - 1);
-            if (previousNode != null) {
-                add(previousNode, element);
-            } else {
-                System.out.println("Index out of bounds");
-            }
+            add(previousNode, element);
         }
-    };
+    }
 
     private void add(NodeElements<E> previousNode, E element) {
+        if (previousNode == null) {
+            throw new IllegalArgumentException("Previous node cannot be null.");
+        }
         NodeElements<E> newNode = new NodeElements<>();
         newNode.DoublyNodeElements(element);
-        if (previousNode == null) {
-            insertFront(element);
-            return;
-        } else {
-            NodeElements<E> nextNode = previousNode.next;
-            newNode.previous = previousNode;
-            newNode.next = nextNode;
-            previousNode.next = newNode;
-            if (nextNode != null) {
-                nextNode.previous = newNode;
-            }
-            size = size + 1;
+        NodeElements<E> nextNode = previousNode.next;
+        newNode.previous = previousNode;
+        newNode.next = nextNode;
+        previousNode.next = newNode;
+        if (nextNode != null) {
+            nextNode.previous = newNode;
         }
-
+        size++;
     }
 
     public void removeAt(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
         if (index == 0) {
             removeFront();
         } else if (index == size - 1) {
             removeBack();
-        } else if(0 < index && index < size-1){
+        } else {
             NodeElements<E> node = getNodeAt(index);
-            if (node != null) {
-                remove(node);
-            }
-        }
-        else{
-            System.out.println("Index out of bounds");
+            remove(node);
         }
     }
 
     private void remove(NodeElements<E> n) {
-        if (n != null) {
-            NodeElements<E> previousNode = n.previous;
-            NodeElements<E> nextNode = n.next;
-            if (previousNode != null) {
-                previousNode.next = nextNode;
-            } else {
-                head = nextNode; // n was the head
-            }
-            if (nextNode != null) {
-                nextNode.previous = previousNode;
-            } else {
-                tail = previousNode; // n was the tail
-            }
-            n.next = null;
-            n.previous = null;
-            size = size - 1;
+        if (n == null) {
+            throw new IllegalArgumentException("Node to remove cannot be null.");
         }
+        NodeElements<E> previousNode = n.previous;
+        NodeElements<E> nextNode = n.next;
+        if (previousNode != null) {
+            previousNode.next = nextNode;
+        } else {
+            head = nextNode;
+        }
+        if (nextNode != null) {
+            nextNode.previous = previousNode;
+        } else {
+            tail = previousNode;
+        }
+        n.next = null;
+        n.previous = null;
+        size--;
     }
 
     public void displayReverse() {
         NodeElements<E> current = tail;
-        if (current != null) {
-            System.out.println("<-- End");
-            while (current != null) {
-                System.out.println(current.data);
-                current = current.previous;
-            }
-            System.out.println("Start -->");
-        } else {
+        if (current == null) {
             System.out.println("Empty list");
+            return;
         }
+        System.out.println("<-- End");
+        while (current != null) {
+            System.out.println(current.data);
+            current = current.previous;
+        }
+        System.out.println("Start -->");
     }
 }
